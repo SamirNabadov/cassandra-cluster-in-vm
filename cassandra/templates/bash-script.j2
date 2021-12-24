@@ -1,0 +1,15 @@
+#!/usr/bin/bash
+
+# 1. Changing cluster name (by default cluster name "Test Cluster")
+# 2. Creating new user for database
+
+{{ cqlsh }} {{ listen_address }} -u cassandra -p cassandra << EOF
+CREATE ROLE {{ new_username }} with SUPERUSER = true AND LOGIN = true and PASSWORD = '{{ new_password }}';
+update system.local set cluster_name = '{{ cluster_name }}' where key='local';
+exit;
+EOF
+
+{{ nodetool }} flush -- system
+
+
+

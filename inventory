@@ -1,0 +1,9 @@
+[hosts]
+cassandra01.local.az ansible_host=192.168.1.11
+cassandra02.local.az ansible_host=192.168.1.12
+cassandra03.local.az ansible_host=192.168.1.13
+
+[cluster_nodes]
+cassandra01.local.az
+cassandra02.local.az
+cassandra03.local.az

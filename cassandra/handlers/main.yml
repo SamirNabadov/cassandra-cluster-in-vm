@@ -1,0 +1,17 @@
+---
+# handlers file for cassandra
+
+- name: Check Cluster Status Output
+  shell: "{{ nodetool }} status"
+  register: cluster_status
+
+- name: Display Cluster Status Output
+  debug:
+    msg: "{{ cluster_status.stdout_lines }}"
+  run_once: true
+
+- name: Cassandra Restart Service
+  service:
+    name: cassandra
+    state: restarted
+    enabled: yes

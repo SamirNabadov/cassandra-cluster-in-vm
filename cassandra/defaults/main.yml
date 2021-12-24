@@ -1,0 +1,36 @@
+---
+# Cluster configuration
+cluster_name: Cassandra_Cluster
+cassandra_seeds: "{{ groups['cluster_nodes'] | map('extract', hostvars, ['ansible_host']) | join(',') }}"
+cassandra_path: /etc/cassandra
+
+# Auth configuration 
+authenticator: PasswordAuthenticator
+
+# For IP Address configuration in YML
+broadcast_address: "{{ hostvars[inventory_hostname]['ansible_host'] }}"
+listen_address: "{{ hostvars[inventory_hostname]['ansible_host'] }}"
+broadcast_rpc_address: "{{ hostvars[inventory_hostname]['ansible_host'] }}"
+
+# Port configurations
+cassandra_port: 9042
+rpc_port: 9160
+storage_port: 7000
+ssl_storage_port: 7001
+
+# Repo configuration
+cassandra_baseurl: https://www.apache.org/dist/cassandra/redhat/311x/
+cassandra_gpgkey: https://www.apache.org/dist/cassandra/KEYS
+java_package: java-1.8.0-openjdk.x86_64
+
+# Binary files
+nodetool: /usr/bin/nodetool
+cqlsh: /usr/bin/cqlsh
+
+# Python verions
+python3_version: "python3.6"
+python2_version: "python2.7"
+
+# User parameters
+new_username: molmonitoring
+new_password: molmonitoring

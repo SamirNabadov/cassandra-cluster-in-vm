@@ -1,0 +1,87 @@
+- name: Check if java 8 already installed
+  command: java -version 2>&1 | grep version | awk '{print $3}' | sed 's/"//g'
+  register: java_version
+  ignore_errors: True
+
+- name:  java version command result
+  debug:
+    msg: "Java not installed"
+  when: java_version is failed
+  
+- name: install java 1.8 version
+  yum: 
+    name: "{{ java_package }}"
+    state: present
+  when: java_version is failed
+
+- name: Add repo for cassandra
+  yum_repository:
+    name: Cassandra
+    description: Apache Cassandra YUM repo
+    baseurl: "{{ cassandra_baseurl }}"
+    gpgkey: "{{ cassandra_gpgkey }}"
+    enabled: yes
+    gpgcheck: yes
+
+- name: Yum clean metadata
+  command: yum clean metadata
+  args:
+    warn: no
+
+- name: Install Cassandra
+  yum:
+    name: cassandra
+    state: present
+    update_cache: yes
+
+- name: Override cassandra.yaml file
+  template:
+    src: cassandra.j2
+    dest: "{{ cassandra_path }}/conf/cassandra.yaml"
+
+- name: Override cassandra-rackdc.properties file
+  template: 
+    src: cassandra-rackdc.j2
+    dest: "{{ cassandra_path }}/conf/cassandra-rackdc.properties"
+
+- name: daemon reload
+  systemd:
+    daemon_reload: yes
+
+- name: Cassandra service start
+  service:
+    name: cassandra
+    state: restarted
+
+- name: Install cqlsh module
+  command: pip3 install cqlsh
+
+- name: Copy cqlshlib to python2 folder for cqlsh module
+  copy:
+    src: "/usr/lib/{{ python3_version }}/site-packages/cqlshlib"
+    dest: "/usr/lib/{{ python2_version }}/site-packages/"
+    remote_src: yes
+
+- name: Copy bash_script.sh to remote host
+  template:
+    src: bash-script.j2
+    dest: "{{ cassandra_path }}/bash-script.sh"
+
+- name: Execute bash_script.sh
+  command: "sh {{ cassandra_path }}/bash-script.sh"
+
+- name: Change cluster name with sed command
+  command: "sed -i 's/Test Cluster/{{ cluster_name }}/g' {{ cassandra_path }}/conf/cassandra.yaml"
+  notify:
+    - Cassandra Restart Service
+    - Check Cluster Status Output
+    - Display Cluster Status Output
+    
+
+
+
+
+
+
+
+
