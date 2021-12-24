@@ -13,7 +13,7 @@ Configured software and tools
 
 Basic settings
 ------------
-* Installing and Configuring Cassandra cluster
+* Installed and Configured Cassandra Cluster
 * Configured cqlsh tool for connect and execute query in database
 * Changed cluster name (By default cluster name is "Test Cluster")
 * Created new superuser for database
