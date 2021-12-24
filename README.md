@@ -26,6 +26,7 @@ Currently tested on these Operating Systems
 Requirements
 ------------
 * Ansible 2.11.7
+* Python 2.7
 
 
 Dependencies
